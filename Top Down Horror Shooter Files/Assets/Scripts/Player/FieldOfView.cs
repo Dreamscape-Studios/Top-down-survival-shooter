@@ -28,17 +28,19 @@ public class FieldOfView : MonoBehaviour
 
 		int vertexIndex = 1;
 		int triangleIndex = 0;
+		Debug.Log(transform.position);
 		for (int i = 0; i <= rayCount; i++)
 		{
 			Vector3 vertex;
 			RaycastHit2D hit = Physics2D.Raycast(origin, GetVectorFromAngle(angle), viewDistance);
-			if (hit.collider == null || hit.collider.transform.name == "Player")
+			if (hit.collider != null)
 			{
-				vertex = origin + GetVectorFromAngle(angle) * viewDistance;
+				vertex = hit.point;
+				Debug.Log($"Hit {hit.collider.name}");
 			}
 			else
 			{
-				vertex = hit.point;
+				vertex = origin + GetVectorFromAngle(angle) * viewDistance;
 			}
 
 			vertices[vertexIndex] = vertex;
