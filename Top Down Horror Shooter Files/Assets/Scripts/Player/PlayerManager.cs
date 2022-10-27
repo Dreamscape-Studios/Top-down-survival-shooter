@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-	public PlayerMovement playerMovement;
-	public PlayerRotation playerRotation;
+	[Header("Script References")]
+	public PlayerMovement movement;
+	public PlayerRotation rotation;
+	public PlayerInventory inventory;
+	public Pickup pickup;
 
+	[Header("Component References")]
 	public Rigidbody2D body;
-
 	public Camera cam;
-	#region singleton
+
+	#region init
 	public static PlayerManager instance;
 	private void Awake()
 	{
@@ -24,8 +28,40 @@ public class PlayerManager : MonoBehaviour
 
 		body = GetComponent<Rigidbody2D>();
 		cam = Camera.main;
-		playerMovement = GetComponent<PlayerMovement>();
-		playerRotation = GetComponent<PlayerRotation>();
+		movement = GetComponent<PlayerMovement>();
+		rotation = GetComponent<PlayerRotation>();
+		inventory = GetComponent<PlayerInventory>();
+		pickup = GetComponent<Pickup>();
+
+		Debug.Log("Finished PlayerManager init");
 	}
 	#endregion
+
+	[Header("Movement")]
+	public float moveSpeed;
+	public float rotationSpeed;
+
+	[Header("Interaction")]
+	public float pickupDistance;
+
+	private void Update()
+	{
+		InputManager();
+	}
+
+	private void FixedUpdate()
+	{
+		movement.HandleMovement(moveSpeed);
+		rotation.HandleRotation(GetMousePos(), rotationSpeed);
+	}
+
+	private Vector3 GetMousePos()
+	{
+		return cam.ScreenToWorldPoint(Input.mousePosition);
+	}
+	private void InputManager()
+	{
+		if (Input.GetMouseButtonDown(1))
+			pickup.CheckForItem(GetMousePos(), pickupDistance);
+	}
 }
