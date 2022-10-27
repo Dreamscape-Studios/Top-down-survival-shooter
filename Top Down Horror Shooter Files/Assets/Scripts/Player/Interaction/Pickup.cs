@@ -13,20 +13,17 @@ public class Pickup : MonoBehaviour
 
     public void CheckForItem(Vector3 mousePos, float pickupDistance)
     {
-        Item item = null;
-        ItemPickup itemObject = null;
-
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.position + mousePos, pickupDistance, itemLayer);
-        if (hit.collider.GetComponent<ItemPickup>() != null)
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, mousePos - transform.position, pickupDistance, itemLayer);
+        if (hit.collider != null)
         {
-            itemObject = (ItemPickup)hit.collider.GetComponent<ItemPickup>();
-            item = itemObject.item;
-        }
+            if (hit.collider.GetComponent<ItemPickup>() != null)
+            {
+                ItemPickup itemObject = (ItemPickup)hit.collider.GetComponent<ItemPickup>();
+                Item item = itemObject.item;
 
-        if (item != null)
-        {
-            if (player.inventory.AddItem(item))
-                Destroy(itemObject.gameObject);
+                if (player.inventory.AddItem(item))
+                    Destroy(itemObject.gameObject);
+            }
         }
     }
 }

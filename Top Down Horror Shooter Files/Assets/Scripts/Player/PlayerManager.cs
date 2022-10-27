@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-	[Header("Script References")]
-	public PlayerMovement movement;
-	public PlayerRotation rotation;
-	public PlayerInventory inventory;
-	public Pickup pickup;
-
-	[Header("Component References")]
-	public Rigidbody2D body;
-	public Camera cam;
+	#region component references
+	[HideInInspector] public PlayerMovement movement;
+	[HideInInspector] public PlayerRotation rotation;
+	[HideInInspector] public PlayerInventory inventory;
+	[HideInInspector] public Pickup pickup;
+	[HideInInspector] public UserInterface ui;
+	[HideInInspector] public Rigidbody2D body;
+	[HideInInspector] public Camera cam;
+	#endregion
 
 	#region init
 	public static PlayerManager instance;
@@ -32,21 +32,41 @@ public class PlayerManager : MonoBehaviour
 		rotation = GetComponent<PlayerRotation>();
 		inventory = GetComponent<PlayerInventory>();
 		pickup = GetComponent<Pickup>();
+		ui = GameObject.FindGameObjectWithTag("UI").GetComponent<UserInterface>();
 
 		Debug.Log("Finished PlayerManager init");
 	}
 	#endregion
 
+	#region variables
+	[Header("Attributes")]
+	public float health; // int out of 20
+	public float maxHealth = 20;
+	public float calories; // int out of 1000
+	public float maxCalories = 1000;
+	public float hydration; // percent out of 100
+	public float maxHydration = 100;
+
 	[Header("Movement")]
-	public float moveSpeed;
-	public float rotationSpeed;
+	public float moveSpeed = 3.0f;
+	public float rotationSpeed = 10.0f;
 
 	[Header("Interaction")]
-	public float pickupDistance;
+	public float pickupDistance = 2.0f;
+
+	[Header("States")]
+	public bool bleeding = false;
+	public float bleedingMagnitude = 0;
+	#endregion
 
 	private void Update()
 	{
 		InputManager();
+		ui.UpdateText(health, maxHealth, calories, maxCalories, hydration, 
+			maxHydration, inventory.medkits, inventory.bandages,
+			inventory.food, inventory.drinks);
+		if (bleeding)
+			ApplyBleeding(bleedingMagnitude);
 	}
 
 	private void FixedUpdate()
@@ -59,9 +79,39 @@ public class PlayerManager : MonoBehaviour
 	{
 		return cam.ScreenToWorldPoint(Input.mousePosition);
 	}
+
+	private void ApplyBleeding(float mag)
+	{
+		health -= mag * Time.deltaTime;
+	}
+
 	private void InputManager()
 	{
 		if (Input.GetMouseButtonDown(1))
+		{
 			pickup.CheckForItem(GetMousePos(), pickupDistance);
+		}
+		if (Input.GetKeyDown(KeyCode.Alpha4))
+		{
+			inventory.UseMedkit(instance);
+		}
+		if (Input.GetKeyDown(KeyCode.Alpha5))
+		{
+			inventory.UseBandage(instance);
+		}
+		if (Input.GetKeyDown(KeyCode.Alpha6))
+		{
+			inventory.UseFood(instance);
+		}
+		if (Input.GetKeyDown(KeyCode.Alpha7))
+		{
+			inventory.UseDrink(instance);
+		}
+	}
+
+	public void OnDrawGizmos()
+	{
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawRay(transform.position, GetMousePos() - transform.position); // draws ray to player mouse position
 	}
 }

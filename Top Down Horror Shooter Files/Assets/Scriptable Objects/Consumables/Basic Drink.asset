@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1fa710c0f37e6134aafee9801fb7fe9e, type: 3}
-  m_Name: Basic Medkit
+  m_Name: Basic Drink
   m_EditorClassIdentifier: 
-  name: Basic Medkit
-  description: A basic medkit for restoring health
+  name: Basic Drink
+  description: 
   icon: {fileID: 0}
-  weight: 1
-  type: 0
-  health: 4
+  weight: 0
+  type: 3
+  health: 0
   calories: 0
-  hydration: 0
+  hydration: 20

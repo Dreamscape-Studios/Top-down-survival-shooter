@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fa710c0f37e6134aafee9801fb7fe9e, type: 3}
   m_Name: Basic Bandage
   m_EditorClassIdentifier: 
-  name: 
-  description: 
+  name: Basic Bandage
+  description: A basic bandage for stopping blood loss
   icon: {fileID: 0}
-  weight: 0
+  weight: 0.5
+  type: 1
