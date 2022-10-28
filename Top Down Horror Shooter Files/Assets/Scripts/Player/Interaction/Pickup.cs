@@ -18,7 +18,7 @@ public class Pickup : MonoBehaviour
         {
             if (hit.collider.GetComponent<ItemPickup>() != null)
             {
-                ItemPickup itemObject = (ItemPickup)hit.collider.GetComponent<ItemPickup>();
+                ItemPickup itemObject = hit.collider.GetComponent<ItemPickup>();
                 Item item = itemObject.item;
 
                 if (player.inventory.AddItem(item))

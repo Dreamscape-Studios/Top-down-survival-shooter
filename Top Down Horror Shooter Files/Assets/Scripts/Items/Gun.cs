@@ -13,7 +13,7 @@ public class Gun : Item
 
     public int magazineSize;
 
-    public GameObject prefab;
+    public GameObject obj;
 
     public enum GunTypes
     {

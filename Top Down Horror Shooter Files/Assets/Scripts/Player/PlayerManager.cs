@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class PlayerManager : MonoBehaviour
 	[HideInInspector] public UserInterface ui;
 	[HideInInspector] public Rigidbody2D body;
 	[HideInInspector] public Camera cam;
+	public Transform gunHand;
+	public Light2D globalLight;
+	
 	#endregion
 
 	#region init
@@ -35,6 +39,8 @@ public class PlayerManager : MonoBehaviour
 		ui = GameObject.FindGameObjectWithTag("UI").GetComponent<UserInterface>();
 
 		Debug.Log("Finished PlayerManager init");
+
+		globalLight.intensity = 0;
 	}
 	#endregion
 
@@ -67,6 +73,11 @@ public class PlayerManager : MonoBehaviour
 			inventory.food, inventory.drinks);
 		if (bleeding)
 			ApplyBleeding(bleedingMagnitude);
+
+		if (inventory.equippedGun != null)
+		{
+			inventory.equippedGun.timeTillFire -= Time.deltaTime;
+		}
 	}
 
 	private void FixedUpdate()
@@ -82,11 +93,18 @@ public class PlayerManager : MonoBehaviour
 
 	private void ApplyBleeding(float mag)
 	{
-		health -= mag * Time.deltaTime;
+		health -= (mag / 10) * Time.deltaTime;
 	}
 
 	private void InputManager()
 	{
+		if (Input.GetMouseButton(0))
+		{
+			if (inventory.equippedGun != null)
+			{
+				inventory.equippedGun.Fire();
+			}
+		}
 		if (Input.GetMouseButtonDown(1))
 		{
 			pickup.CheckForItem(GetMousePos(), pickupDistance);

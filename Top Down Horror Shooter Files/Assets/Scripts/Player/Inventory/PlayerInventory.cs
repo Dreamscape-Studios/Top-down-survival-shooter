@@ -5,6 +5,8 @@ public class PlayerInventory : MonoBehaviour
 {
     public List<Item> inventory;
 
+	public GunScript equippedGun;
+
 	public int inventorySize = 10;
 
 	public float maxWeight = 10.0f;
@@ -37,6 +39,15 @@ public class PlayerInventory : MonoBehaviour
 				if (consumable.type == Consumable.ConsumableTypes.Drink)
 					drinks++;
 			}
+
+			if (newItem is Gun gun)
+			{
+				Transform sprite = transform.Find("Player Graphics");
+				equippedGun = Instantiate(gun.obj, PlayerManager.instance.gunHand.position, 
+					sprite.transform.rotation, sprite).GetComponent<GunScript>();
+				equippedGun.init(gun);
+			}
+
 			Debug.Log($"{newItem.name} added to inventory.\n" +
 				$"Inventory weight: {currentWeight} Items in inventory: {inventory.Count}");
 			return true;
@@ -50,6 +61,10 @@ public class PlayerInventory : MonoBehaviour
 			$"Inventory weight: {currentWeight} Items in inventory: {inventory.Count}");
 	}
 
+	public void UseGun()
+	{
+
+	}
 	public void UseMedkit(PlayerManager player)
 	{
 		if (medkits > 0)
